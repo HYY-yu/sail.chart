@@ -1,0 +1,113 @@
+# Default values for sail.chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: ccr.ccs.tencentyun.com/hyy-yu/sail
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+nameOverride: ""
+fullnameOverride: ""
+
+# 默认为 true，会启动一个单实例的 Mysql，请指定挂载目录
+needMysql: true 
+# 默认为 true，会启动一个单实例的 ETCD，请指定数据挂载目录
+needETCD: true
+# 如果 needMysql 或者 needETCD 为 FALSE，将不会启动相关实例，请在配置文件中指定 Mysql、ETCD 的访问地址。
+
+
+
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 8108
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8108"
+    prometheus.io/path: "/sail/metrics"
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations: {}
+  hosts:
+    - host: sail-demo.hyy-yu.space
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: 
+   - secretName: sail-demo-space-tls
+     hosts:
+       - sail-demo.hyy-yu.space
+
+# Modify the liveness probe for your needs or completely disable it by commenting out.
+livenessProbe:
+  httpGet:
+    port: 8108
+    path: /sail/system/health
+  initialDelaySeconds: 200
+  timeoutSeconds: 1
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 10
+# Modify the readiness probe for your needs or completely disable it by commenting out.
+readinessProbe:
+  httpGet:
+    port: 8108
+    path: /sail/system/health
+  initialDelaySeconds: 5
+  timeoutSeconds: 1
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 3
+
+resources: 
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 1024Mi
+  requests:
+    cpu: 50m
+    memory: 128Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
