@@ -1,0 +1,58 @@
+{{- if .Values.needMysql -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  label:
+    app: mysql
+spec:
+  serviceName: mysql
+  selector:
+    matchLabels:
+      app: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - image: mysql:5.7
+        name: mysql
+        livenessProbe:
+          exec:
+            command: ["mysqladmin", "ping", "-uping", "-ppinger"]
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command: ["mysqladmin", "ping", "-uping", "-ppinger"]
+          initialDelaySeconds: 5
+          periodSeconds: 2
+          timeoutSeconds: 1
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: root
+        command:
+          - "--character-set-server=utf8mb4"
+          - "--collation-server=utf8mb4_unicode_ci"
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-emptyDir
+          mountPath: /var/lib/mysql
+        - name: mysql-init-sql
+          mountPath: /docker-entrypoint-initdb.d
+      volumes:
+      - name: mysql-emptyDir
+        emptyDir: {}
+      - name: mysql-init-sql
+        configMap:
+          name: mysql-init-sql
+          items:
+          - key: "db.sql"
+            path: "db.sql"
+{{- end }}

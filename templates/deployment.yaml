@@ -29,6 +29,10 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumesMounts:
+          - name: sail-cfg
+            mountPath: "/app"
+            readOnly: true
           ports:
             - name: http
               containerPort: 8108
@@ -47,6 +51,13 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+      - name: sail-cfg
+        configMap:
+          name: {{ include "sail.chart.fullname" . }}
+          items:
+          - key: "cfg.toml"
+            path: "cfg.toml"
       {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}

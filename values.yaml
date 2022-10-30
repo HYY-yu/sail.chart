@@ -14,13 +14,60 @@ nameOverride: ""
 fullnameOverride: ""
 
 # 默认为 true，会启动一个单实例的 Mysql，请指定挂载目录
-needMysql: true 
+# 此 MYSQL 仅用于测试，数据无法持久化。
+needMysql: true
 # 默认为 true，会启动一个单实例的 ETCD，请指定数据挂载目录
+# 此 ETCD 仅用于测试，数据无法持久化。
 needETCD: true
 # 如果 needMysql 或者 needETCD 为 FALSE，将不会启动相关实例，请在配置文件中指定 Mysql、ETCD 的访问地址。
 
+# 配置文件
+config: |-
+  # Toml config
+  [jwt]
+  expireDuration = "12h"
+  secret = "i1ydX9RtHyuJTrw7frcu"
+  type = "refresh_token"
+  refreshDuration = "168h"
 
+  [mysql]
+  [mysql.base]
+  connMaxLifeTime = "3m"
+  maxIdleConn = 30
+  maxOpenConn = 60
+  addr = "mysql:3306"
+  name = "sail"
+  pass = "root"
+  user = "root"
 
+  [etcd]
+  endpoints = ["etcd:2379"]
+  username = ""
+  password = ""
+  dialTimeout = "10s"
+  dialKeepAlive = "1m"
+  dialKeepAliveTimeout = "5s"
+
+  [log]
+  logPath = "./services.log"
+  level = "DEBUG" # DEBUG INFO WARN ERROR
+  stdout = true
+  jsonFormat = true
+
+  [server]
+  serverName = "sail"
+  host = ":8108"
+  pprof = true
+  historyListLen = 50
+
+  [jaeger]
+  udpEndpoint = "http://127.0.0.1:14268/api/traces"
+  stdOut = false
+
+  [sdk]
+  configFilePath = "."
+  logLevel = "WARN"
+  MergeConfig = false
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -33,10 +80,12 @@ serviceAccount:
 
 podAnnotations: {}
 
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -52,6 +101,7 @@ service:
     prometheus.io/port: "8108"
     prometheus.io/path: "/sail/metrics"
 
+# 每个kubernetes的ingress不一样，请换成自己的配置。
 ingress:
   enabled: true
   className: "nginx"
@@ -61,10 +111,10 @@ ingress:
       paths:
         - path: /
           pathType: ImplementationSpecific
-  tls: 
-   - secretName: sail-demo-space-tls
-     hosts:
-       - sail-demo.hyy-yu.space
+  tls:
+    - secretName: sail-demo-space-tls
+      hosts:
+        - sail-demo.hyy-yu.space
 
 # Modify the liveness probe for your needs or completely disable it by commenting out.
 livenessProbe:
@@ -87,7 +137,7 @@ readinessProbe:
   successThreshold: 1
   failureThreshold: 3
 
-resources: 
+resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
