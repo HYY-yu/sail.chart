@@ -35,7 +35,7 @@ config: |-
   connMaxLifeTime = "3m"
   maxIdleConn = 30
   maxOpenConn = 60
-  addr = "mysql:3306"
+  addr = "mysql-0:3306"
   name = "sail"
   pass = "root"
   user = "root"
