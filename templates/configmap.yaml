@@ -4,6 +4,6 @@ metadata:
   name: {{ include "sail.chart.fullname" . }}
 data: 
   cfg.toml: |-
-    {{ .Value.config | indent 4 }}
+    {{ .Values.config | indent 4 }}
 
   
