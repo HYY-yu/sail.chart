@@ -104,6 +104,6 @@ data:
     INSERT INTO sail.staff (id, name, password, refresh_token, create_time, create_by) VALUES (2, 'demo', '$2a$10$ulYSREno.2XaxUkAB/GcIOPTxVEKVF0QNwfna6xFZcpfjWSOaszQ.', '', '2022-10-30 04:53:58', 1);
     INSERT INTO sail.staff_group_rel (id, project_group_id, staff_id, role_type) VALUES (1, 0, 1, 1);
     INSERT INTO sail.staff_group_rel (id, project_group_id, staff_id, role_type) VALUES (2, 1, 2, 2);
-    INSERT INTO sail.project_group (id, name, create_time, create_by, delete_time) VALUES (1, '测试项目组', '2022-10-30 12:47:16', 1, 0);
+    INSERT INTO sail.project_group (id, name, create_time, create_by, delete_time) VALUES (1, 'TestForDemo', '2022-10-30 12:47:16', 1, 0);
     
 {{- end }}
