@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ include "sail.chart.fullname" . }}
 data: 
-  cfg.toml: |-
-    {{ .Values.config | indent 4 }}
+  cfg.toml: |
+    {{ .Values.config | nindent 4 }}
 
   
