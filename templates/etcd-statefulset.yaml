@@ -18,7 +18,7 @@ spec:
       name: etcd
     spec:
       volumes:
-        - name: etcd-emptyDir
+        - name: etcd-data
           emptyDir: {}
       initContainers: # 解决非根容器无法访问挂载卷的问题
         - name: volume-permissions
@@ -142,7 +142,7 @@ spec:
           protocol: TCP
         volumeMounts:
         - mountPath: /var/run/etcd/default.etcd
-          name: etcd-emptyDir
+          name: etcd-data
         lifecycle:
           preStop:
             exec:
