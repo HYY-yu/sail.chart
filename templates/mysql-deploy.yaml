@@ -1,18 +1,4 @@
 {{- if .Values.needMysql -}}
-apiVersion: v1
-kind: Service
-metadata:
-  name: mysql
-  labels:
-    app: mysql
-spec:
-  ports:
-  - name: mysql
-    port: 3306
-  clusterIP: None
-  selector:
-    app: mysql
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
