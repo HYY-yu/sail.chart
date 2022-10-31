@@ -38,6 +38,9 @@ spec:
         app: etcd
       name: etcd
     spec:
+      volumes:
+        - name: etcd-emptyDir
+          emptyDir: {}
       initContainers: # 解决非根容器无法访问挂载卷的问题
         - name: volume-permissions
           image: busybox
@@ -151,9 +154,6 @@ spec:
         image: bitnami/etcd:3.5.0
         imagePullPolicy: IfNotPresent
         name: etcd
-        volumes:
-        - name: etcd-emptyDir
-          emptyDir: {}
         ports:
         - containerPort: 2380
           name: peer
