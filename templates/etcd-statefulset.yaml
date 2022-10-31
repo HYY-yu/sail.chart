@@ -26,7 +26,7 @@ spec:
           command: ['sh', '-c', 'chmod -R g+rwX /var/run/etcd/default.etcd']
           volumeMounts:
           - mountPath: /var/run/etcd/default.etcd
-            name: datadir
+            name: etcd-data
       containers:
       - command:
         - /bin/sh
